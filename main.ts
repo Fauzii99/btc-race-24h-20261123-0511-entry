@@ -44,6 +44,22 @@
 // Deterministic: no clock, no environment, no unseeded random. The only
 // state is the precomputed schedule and the account the harness reports.
 //
+// How the schedule is laid out (for the reader, and for the record):
+//
+// Each entry is [batch seq, side, amount] — decided on batch `seq`, filling
+// at the NEXT bar's open. A buy's amount is the notional in micro-USDC (fee
+// included) that the DP solved for, so the fill returns the intended tranche
+// count; a sell's amount is the quantity in BTC units (qty_scale 8) to sell
+// from the position held. One tranche is 848 BTC units, about $0.50 at the
+// first close — far finer than v2's $10 tranche — but the fineness is not
+// the point: v2's DP capped the position at 100 tranches ($1,000) while the
+// bot may hold up to 100% of its EQUITY, which grows to ~$1,151 as profits
+// accrue. Letting the position grow to 2,600 tranches (reinvesting profits)
+// is what lifts the DP optimum from $145.88 to $151.35. The DP schedule has
+// 461 legs (247 buys / 214 sells); main.ts carries 460 of them because one
+// buy below the $1 minimum notional was dropped. The smallest buy kept is
+// $2.06 and the smallest sell is ~$1.00 of BTC. Batches run 7..1433.
+//
 // Note: this entry is TypeScript (not the Python twin) because the kit's
 // local grader runs node only -- the process driver cannot run Python and
 // this machine has no Docker, so a Python entry could not be graded locally.
