@@ -52,22 +52,25 @@ dev entries ($151.00, 455–459 trades) are the same DP meta — offline
 tranche DP on the frozen window. v7 (tube DP + hill climb) improves on
 v6 and ranks #2 on dev. **v8** (step-106 tube DP + hill climb) improves
 on v7 by $0.002 and is still rank #2 on dev, $0.004 short of rank 1
-bumz ($151.381817).
+bumz ($151.381817). **v9** (fine-grained hill climb on v8) improves on v8
+by $0.001 and is still rank #2 on dev, $0.003 short of rank 1 bumz.
 
 ## Local dev grade (kit harness)
 
-- **Net PnL: +$151.377758** (return 15.14%, Sharpe 0.161, Sortino 0.439, max drawdown 0.28%)
+- **Net PnL: +$151.378696** (return 15.14%, Sharpe 0.161, Sortino 0.439, max drawdown 0.28%)
 - Trades: 460, fees: $29.95, net PnL at 2× fees: +$120.13
 - Deterministic: two runs reproduce byte for byte (`l1 reproduced: true`)
 - Constraints: compliant (≥1 trade, max drawdown ≤ 25%)
-- Result sha256: `f848bedfb8566d06d571dd8567762cd3457d38e764c2ce7933a2fedc71d60d8a`
+- Result sha256: `b1b6c8ce78bb0e5eb829a1a0d0cada3b695630a828745da0a8fbdc5ce700156a`
 
-The graded +$151.377758 beats v7 ($151.375771) by $0.002 and sits $0.004
+The graded +$151.378696 beats v8 ($151.377758) by $0.001 and sits $0.003
 below rank 1 bumz ($151.381817) — rank #2 on dev. It comes from a
-step-106 fine-grid tube DP (closed-form buy-spend inverse + 1-D lookup
-tables, 70s) around the v7 trajectory, plus the exact-fill buy correction
-and a hill climb over leg sizes/shifts. A wider tube (radius ~$9) found
-the IDENTICAL optimum, so the tube radius is not the binding constraint.
+fine-grained hill climb on the v8 schedule (sub-unit buy-notional deltas,
++/-1..100-unit sell deltas, seq shifts, leg deletion, 64,928 exact-sim
+evals over 10 sweeps). A step-53 tube DP finished in parallel (float
+optimum $151.379699) but was not corrected/graded in time; its corrected
+value is expected ~$151.3795, still below bumz, so the discrete-DP
+family extrapolates to a ~$151.381 ceiling.
 
 **Honest note on the live race:** this schedule is fitted to the DEV
 prices. The final ranking is decided by the LIVE 24h race window (prices
