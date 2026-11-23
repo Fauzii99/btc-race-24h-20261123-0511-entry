@@ -59,7 +59,7 @@ rank-1 exact value ($151.342098) and ranks ~1 on dev.
 - Trades: 460, fees: $29.95, net PnL at 2× fees: +$120.13
 - Deterministic: two runs reproduce byte for byte (`l1 reproduced: true`)
 - Constraints: compliant (≥1 trade, max drawdown ≤ 25%)
-- Result sha256: `d430c828868bee275d32dc0654c6dbd8cffc97867f4d6a46d51ad96fe579596d`
+- Result sha256: `6f8b821905aed407c0f24e1bf58f961e460988bbfaa329dfd1863b0d3bb363f8`
 
 The graded +$151.348911 beats the rank-1 exact value ($151.342098,
 rebahan), rank 2 ($151.331780) and rank 3 ($151.306693) — estimated rank
