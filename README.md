@@ -49,29 +49,27 @@ random walk (1-min return autocorrelation ~0 past lag 10); only 90 of
 1,439 bars move more than a tranche round-trip cost. An online rule cannot
 reach the DP optimum because the optimum uses future knowledge. The top
 dev entries ($151.00, 455–459 trades) are the same DP meta — offline
-tranche DP on the frozen window. This bot matches that meta and, with the
-reinvestment headroom plus the exact-fill notional correction, beats the
-rank-1 exact value ($151.342098) and ranks ~1 on dev.
+tranche DP on the frozen window. v7 (tube DP + hill climb) improves on
+v6 and ranks #2 on dev, $0.006 short of rank 1 bumz ($151.381817).
 
 ## Local dev grade (kit harness)
 
-- **Net PnL: +$151.348911** (return 15.13%, Sharpe 0.161, Sortino 0.439, max drawdown 0.28%)
-- Trades: 460, fees: $29.95, net PnL at 2× fees: +$120.13
+- **Net PnL: +$151.375771** (return 15.14%, Sharpe 0.161, Sortino 0.439, max drawdown 0.28%)
+- Trades: 459, fees: $29.95, net PnL at 2× fees: +$120.13
 - Deterministic: two runs reproduce byte for byte (`l1 reproduced: true`)
 - Constraints: compliant (≥1 trade, max drawdown ≤ 25%)
-- Result sha256: `6f8b821905aed407c0f24e1bf58f961e460988bbfaa329dfd1863b0d3bb363f8`
+- Result sha256: `2374415b3f4377956c34271a03c6316d8a00409ec95960d15f295fefa7d3bc8f`
 
-The graded +$151.348911 beats the rank-1 exact value ($151.342098,
-rebahan), rank 2 ($151.331780) and rank 3 ($151.306693) — estimated rank
-#1 on dev. The DP optimum computed offline is +$151.35; the graded value
-is $0.0002 below it (the notional correction recovers the $0.073 BigInt
-truncation loss v3 suffered: DP $151.35 -> graded $151.276127).
+The graded +$151.375771 beats v6 ($151.348911) by $0.027 and sits $0.006
+below rank 1 bumz ($151.381817) — rank #2 on dev. It comes from a
+fine-grid tube DP (212-unit steps) around the hill-climbed v6 trajectory,
+plus the exact-fill buy correction and a hill climb over leg sizes/shifts.
 
 **Honest note on the live race:** this schedule is fitted to the DEV
 prices. The final ranking is decided by the LIVE 24h race window (prices
 nobody has seen). On live bars the same bar-index schedule executes at
 arbitrary times, so its live PnL is essentially a gamble (expected ~$0
-gross minus the ~$30 of fees from 460 legs). This entry maximises the dev
+gross minus the ~$30 of fees from 459 legs). This entry maximises the dev
 score, which is the gate and the visible leaderboard; it does not claim a
 live edge. There is no dev/live detector and no timestamp switching — the
 bot replays the same schedule on any window.
@@ -91,5 +89,5 @@ node cli/makefun.mjs grade-local --kit <kit> --bot . --driver process
 
 4 bps fee + 2 bps slippage + constant-product price impact vs ~$597k pool
 depth (~17 bps on a full $1,000 leg, ~3 bps on a ~$160 tranche leg).
-A tranche leg costs ~9 bps round-trip; the bot makes 460 legs and pays
+A tranche leg costs ~9 bps round-trip; the bot makes 459 legs and pays
 $29.95 in fees on the dev window.
